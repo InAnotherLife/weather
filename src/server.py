@@ -35,17 +35,20 @@ def get_coordinates(city_name: str) -> Optional[Tuple[float, float]]:
 # Главная страница
 @app.route('/')
 def index():
-    last_city = session.get('last_city', '')
-    return render_template('index.html', last_city=last_city)
+    last_cities = session.get('last_cities')
+    return render_template('index.html', last_cities=last_cities)
 
 
 # Эндпойнт выводит прогноз погоды для города
 @app.route('/weather', methods=['POST'])
 def get_weather():
-    city_name = request.form['name']
+    city_name = request.form['name'].title()
     coordinates = get_coordinates(city_name)
     if coordinates:
-        session['last_city'] = city_name
+        last_cities = session.get('last_cities', [])
+        if city_name not in last_cities:
+            last_cities.append(city_name)
+            session['last_cities'] = last_cities
         url = ('https://api.open-meteo.com/v1/forecast?' +
                f'latitude={coordinates[0]}&longitude={coordinates[1]}' +
                '&daily=temperature_2m_max,temperature_2m_min&forecast_days=14')
@@ -73,7 +76,7 @@ def get_weather():
 # Эндпойнт удаляет последний введенный пользователем город
 @app.route('/clear', methods=['POST'])
 def clear_last_city():
-    session.pop('last_city')
+    session.pop('last_cities')
     return redirect(url_for('index'))
 
 
@@ -82,7 +85,7 @@ def clear_last_city():
 def get_history():
     cities = Сity.query.all()
     return jsonify({'history': [{'city': city.name, 'count': city.count}
-                                for city in cities]})
+                                for city in cities]}), 200
 
 
 with app.app_context():

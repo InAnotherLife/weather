@@ -11,10 +11,26 @@
     <h1>Погода</h1>
     <form action="/weather" method="post">
         <label for="city">Введите название города:</label>
-        <input type="text" id="city" name="name" value="{{ last_city }}" required>
-        <button type="submit" formaction="/clear" type="submit">x</button>
+        <input type="search" id="city" name="name" required>
         <button type="submit">Отправить</button>
     </form>
+    {% if last_cities %}
+    <p>Погода в городах:</p>
+    <ul>
+        {% for city in last_cities %}
+        <li>
+            <a href="#"
+                onclick="event.preventDefault(); document.getElementById('weatherForm_{{ loop.index }}').submit();">{{ city }}</a>
+            <form id="weatherForm_{{ loop.index }}" action="/weather" method="post" style="display: none;">
+                <input type="hidden" name="name" value="{{ city }}">
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    <form action="/clear" method="post">
+        <button type="submit" type="submit">Удалить историю</button>
+    </form>
+    {% endif %}
 </body>
 
 </html>
