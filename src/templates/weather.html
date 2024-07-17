@@ -8,21 +8,29 @@
 </head>
 
 <body>
-    <h1>Погода в городе {{ city }}</h1>
-    <table border="1">
-        <tr>
-            <th>День</th>
-            <th>Температура днем (°C)</th>
-            <th>Температура ночью (°C)</th>
-        </tr>
-        {% for i in range(weather['time']|length) %}
-        <tr>
-            <td>{{ weather['time'][i] }}</td>
-            <td>{{ weather['temperature_2m_max'][i] }}</td>
-            <td>{{ weather['temperature_2m_min'][i] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div>
+        <h1>Погода в городе {{ city }}</h1>
+    </div>
+    <div>
+        <table border="1">
+            <tr>
+                <th>День</th>
+                <th>Температура днем (°C)</th>
+                <th>Температура ночью (°C)</th>
+            </tr>
+            {% for i in range(weather['time']|length) %}
+            <tr>
+                <td>{{ weather['time'][i] }}</td>
+                <td>{{ weather['temperature_2m_max'][i] }}</td>
+                <td>{{ weather['temperature_2m_min'][i] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div>
+        <br>
+        <a href="/">Назад</a>
+    </div>
 </body>
 
 </html>

@@ -7,30 +7,53 @@
     <title>Погода</title>
 </head>
 
+
 <body>
-    <h1>Погода</h1>
-    <form action="/weather" method="post">
-        <label for="city">Введите название города:</label>
-        <input type="search" id="city" name="name" required>
-        <button type="submit">Отправить</button>
-    </form>
+    <div>
+        <h1>Погода</h1>
+    </div>
+    <div>
+        <form action="/weather" method="post">
+            <label for="city">Введите название города:</label>
+            <input type="search" id="city" name="name" required>
+            <button type="submit">Отправить</button>
+        </form>
+    </div>
     {% if last_cities %}
-    <p>Погода в городах:</p>
-    <ul>
-        {% for city in last_cities %}
-        <li>
-            <a href="#"
-                onclick="event.preventDefault(); document.getElementById('weatherForm_{{ loop.index }}').submit();">{{ city }}</a>
-            <form id="weatherForm_{{ loop.index }}" action="/weather" method="post" style="display: none;">
-                <input type="hidden" name="name" value="{{ city }}">
-            </form>
-        </li>
-        {% endfor %}
-    </ul>
-    <form action="/clear" method="post">
-        <button type="submit" type="submit">Удалить историю</button>
-    </form>
+    <div>
+        <p>Погода в городах:</p>
+    </div>
+    <div>
+        <ul>
+            {% for city in last_cities %}
+            <li>
+                <a href="#" onclick="sendData('{{ city }}')">{{ city }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div>
+        <form action="/clear" method="post">
+            <button type="submit" type="submit">Удалить историю</button>
+        </form>
+    </div>
     {% endif %}
+    <script type="text/javascript">
+        function sendData(city) {
+            var form = document.createElement('form');
+            form.method = 'post';
+            form.action = '/weather';
+
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'name';
+            input.value = city;
+            form.appendChild(input);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
 </body>
 
 </html>
