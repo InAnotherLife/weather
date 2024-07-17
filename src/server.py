@@ -7,7 +7,6 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///weather.db'
 
 db = SQLAlchemy(app)
-geolocator = Nominatim(user_agent='geoapiExercises')
 
 
 # Модель города
@@ -19,6 +18,7 @@ class Сity(db.Model):
 
 # Получение координат города по названию
 def get_coordinates(city_name):
+    geolocator = Nominatim(user_agent='Weather')
     location = geolocator.geocode(city_name)
     if location:
         return location.latitude, location.longitude
@@ -34,7 +34,9 @@ def get_weather():
     city_name = request.form['name']
     coordinates = get_coordinates(city_name)
     if coordinates:
-        url = f'https://api.open-meteo.com/v1/forecast?latitude={coordinates[0]}&longitude={coordinates[1]}&current_weather=true'  # noqa: E501
+        url = ('https://api.open-meteo.com/v1/forecast?' +
+               f'latitude={coordinates[0]}&longitude={coordinates[1]}' +
+               '&daily=temperature_2m_max,temperature_2m_min&forecast_days=14')
         headers = {
                 'Accept': 'text/html',
                 'Accept-Encoding': 'gzip, deflate, sdch',
@@ -51,7 +53,7 @@ def get_weather():
                 new_city = Сity(name=city_name, count=1)
                 db.session.add(new_city)
             db.session.commit()
-        return jsonify({'city': city_name, 'weather': data})
+        return jsonify({'city': city_name, 'weather': data}), 200
     return jsonify({'message': 'City with that name was not found'}), 400
 
 
