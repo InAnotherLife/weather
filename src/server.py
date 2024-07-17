@@ -32,14 +32,7 @@ def get_coordinates(city_name: str) -> Optional[Tuple[float, float]]:
         return location.latitude, location.longitude
 
 
-# Главная страница
-@app.route('/')
-def index():
-    last_cities = session.get('last_cities')
-    return render_template('index.html', last_cities=last_cities)
-
-
-# Эндпойнт выводит прогноз погоды для города
+# Выводит прогноз погоды
 @app.route('/weather', methods=['POST'])
 def get_weather():
     city_name = request.form['name'].title()
@@ -73,7 +66,7 @@ def get_weather():
     return jsonify({'message': 'City with that name was not found'}), 400
 
 
-# Эндпойнт удаляет последний введенный пользователем город
+# Эндпойнт удаляет историю запросов прогноза погоды
 @app.route('/clear', methods=['POST'])
 def clear_last_city():
     session.pop('last_cities')
@@ -86,6 +79,13 @@ def get_history():
     cities = Сity.query.all()
     return jsonify({'history': [{'city': city.name, 'count': city.count}
                                 for city in cities]}), 200
+
+
+# Главная страница
+@app.route('/')
+def index():
+    last_cities = session.get('last_cities')
+    return render_template('index.html', last_cities=last_cities)
 
 
 with app.app_context():
