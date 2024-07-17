@@ -1,12 +1,18 @@
+import os
 from typing import Optional, Tuple
 
 import requests
-from flask import Flask, jsonify, render_template, request
+from dotenv import load_dotenv
+from flask import (Flask, jsonify, redirect, render_template, request, session,
+                   url_for)
 from flask_sqlalchemy import SQLAlchemy
 from geopy.geocoders import Nominatim
 
+load_dotenv()
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///weather.db'
+app.secret_key = os.getenv('SECRET_KEY')
 
 db = SQLAlchemy(app)
 
@@ -29,7 +35,8 @@ def get_coordinates(city_name: str) -> Optional[Tuple[float, float]]:
 # Главная страница
 @app.route('/')
 def index():
-    return render_template('index.html')
+    last_city = session.get('last_city', '')
+    return render_template('index.html', last_city=last_city)
 
 
 # Эндпойнт выводит прогноз погоды для города
@@ -38,6 +45,7 @@ def get_weather():
     city_name = request.form['name']
     coordinates = get_coordinates(city_name)
     if coordinates:
+        session['last_city'] = city_name
         url = ('https://api.open-meteo.com/v1/forecast?' +
                f'latitude={coordinates[0]}&longitude={coordinates[1]}' +
                '&daily=temperature_2m_max,temperature_2m_min&forecast_days=14')
@@ -60,6 +68,21 @@ def get_weather():
         return render_template('weather.html', city=city_name,
                                weather=data.get('daily'))
     return jsonify({'message': 'City with that name was not found'}), 400
+
+
+# Эндпойнт удаляет последний введенный пользователем город
+@app.route('/clear', methods=['POST'])
+def clear_last_city():
+    session.pop('last_city')
+    return redirect(url_for('index'))
+
+
+# Эндпойнт выводит историю запросов прогноза погоды
+@app.route('/history')
+def get_history():
+    cities = Сity.query.all()
+    return jsonify({'history': [{'city': city.name, 'count': city.count}
+                                for city in cities]})
 
 
 with app.app_context():

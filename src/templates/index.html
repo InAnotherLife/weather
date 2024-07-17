@@ -11,7 +11,8 @@
     <h1>Погода</h1>
     <form action="/weather" method="post">
         <label for="city">Введите название города:</label>
-        <input type="text" id="city" name="name" required>
+        <input type="text" id="city" name="name" value="{{ last_city }}" required>
+        <button type="submit" formaction="/clear" type="submit">x</button>
         <button type="submit">Отправить</button>
     </form>
 </body>
