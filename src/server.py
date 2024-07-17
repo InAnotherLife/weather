@@ -1,3 +1,5 @@
+from typing import Optional, Tuple
+
 import requests
 from flask import Flask, jsonify, render_template, request
 from flask_sqlalchemy import SQLAlchemy
@@ -17,7 +19,7 @@ class Сity(db.Model):
 
 
 # Получение координат города по названию
-def get_coordinates(city_name):
+def get_coordinates(city_name: str) -> Optional[Tuple[float, float]]:
     geolocator = Nominatim(user_agent='Weather')
     location = geolocator.geocode(city_name)
     if location:
