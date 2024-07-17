@@ -53,7 +53,8 @@ def get_weather():
                 new_city = Сity(name=city_name, count=1)
                 db.session.add(new_city)
             db.session.commit()
-        return jsonify({'city': city_name, 'weather': data}), 200
+        return render_template('weather.html', city=city_name,
+                               weather=data.get('daily'))
     return jsonify({'message': 'City with that name was not found'}), 400
 
 
