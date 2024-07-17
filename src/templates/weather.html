@@ -13,18 +13,22 @@
     </div>
     <div>
         <table border="1">
-            <tr>
-                <th>День</th>
-                <th>Температура днем (°C)</th>
-                <th>Температура ночью (°C)</th>
-            </tr>
-            {% for i in range(weather['time']|length) %}
-            <tr>
-                <td>{{ weather['time'][i] }}</td>
-                <td>{{ weather['temperature_2m_max'][i] }}</td>
-                <td>{{ weather['temperature_2m_min'][i] }}</td>
-            </tr>
-            {% endfor %}
+            <thead>
+                <tr>
+                    <th>День</th>
+                    <th>Температура днем, °C</th>
+                    <th>Температура ночью, °C</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in range(weather['time']|length) %}
+                <tr>
+                    <td>{{ weather['time'][i] }}</td>
+                    <td>{{ weather['temperature_2m_max'][i] }}</td>
+                    <td>{{ weather['temperature_2m_min'][i] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
     <div>
