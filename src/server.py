@@ -26,11 +26,13 @@ def get_coordinates(city_name: str) -> Optional[Tuple[float, float]]:
         return location.latitude, location.longitude
 
 
+# Главная страница
 @app.route('/')
 def index():
     return render_template('index.html')
 
 
+# Эндпойнт выводит прогноз погоды для города
 @app.route('/weather', methods=['POST'])
 def get_weather():
     city_name = request.form['name']
