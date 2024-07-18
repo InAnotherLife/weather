@@ -82,7 +82,9 @@ def clear_last_city():
 @app.route('/history')
 def get_history():
     cities = Сity.query.all()
-    return render_template('history.html', cities=cities)
+    sorted_cities = sorted(
+        cities, key=lambda city: len(city.added), reverse=True)
+    return render_template('history.html', cities=sorted_cities)
 
 
 # Главная страница
