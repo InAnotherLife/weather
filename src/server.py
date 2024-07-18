@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from typing import Optional, Tuple
 
 import requests
@@ -7,6 +8,8 @@ from flask import (Flask, jsonify, redirect, render_template, request, session,
                    url_for)
 from flask_sqlalchemy import SQLAlchemy
 from geopy.geocoders import Nominatim
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy.types import PickleType
 
 load_dotenv()
 
@@ -21,7 +24,7 @@ db = SQLAlchemy(app)
 class Сity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
-    count = db.Column(db.Integer, default=0)
+    added = db.Column(MutableList.as_mutable(PickleType), default=[])
 
 
 # Получение координат города по названию
@@ -32,7 +35,7 @@ def get_coordinates(city_name: str) -> Optional[Tuple[float, float]]:
         return location.latitude, location.longitude
 
 
-# Выводит прогноз погоды
+# Эндпойнт выводит прогноз погоды
 @app.route('/weather', methods=['POST'])
 def get_weather():
     city_name = request.form['name'].title()
@@ -56,9 +59,11 @@ def get_weather():
             data = response.json()
             current_city = Сity.query.filter_by(name=city_name).first()
             if current_city:
-                current_city.count += 1
+                current_city.added.append(
+                    datetime.utcnow().replace(microsecond=0))
             else:
-                new_city = Сity(name=city_name, count=1)
+                new_city = Сity(name=city_name, added=[
+                                datetime.utcnow().replace(microsecond=0)])
                 db.session.add(new_city)
             db.session.commit()
         return render_template('weather.html', city=city_name,
@@ -73,12 +78,11 @@ def clear_last_city():
     return redirect(url_for('index'))
 
 
-# Эндпойнт выводит историю запросов прогноза погоды
+# Эндпойнт выводит статистику запросов прогноза погоды
 @app.route('/history')
 def get_history():
     cities = Сity.query.all()
-    return jsonify({'history': [{'city': city.name, 'count': city.count}
-                                for city in cities]}), 200
+    return render_template('history.html', cities=cities)
 
 
 # Главная страница
