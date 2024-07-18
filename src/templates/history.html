@@ -11,6 +11,7 @@
     <div>
         <h1>Города и запросы</h1>
     </div>
+    {% if cities %}
     <div>
         <table border="1">
             <thead>
@@ -37,6 +38,13 @@
             </tbody>
         </table>
     </div>
+    {% else %}
+    <div>
+        <h2>
+            Статистики нет!
+        </h2>
+    </div>
+    {% endif %}
     <div>
         <br>
         <a href="/">Назад</a>
