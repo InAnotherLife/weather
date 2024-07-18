@@ -27,11 +27,10 @@
                     <td>{{ city.name }}</td>
                     <td>{{ city.added|length }}</td>
                     <td>
-                        <ul>
-                            {% for date in city.added %}
-                            <li>{{ date }}</li>
-                            {% endfor %}
-                        </ul>
+                        {% for date in city.added %}
+                        {{ date }}
+                        <br>
+                        {% endfor %}
                     </td>
                 </tr>
                 {% endfor %}
