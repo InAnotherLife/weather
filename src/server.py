@@ -73,7 +73,7 @@ def get_weather():
 
 # Эндпойнт удаляет историю запросов прогноза погоды
 @app.route('/clear', methods=['POST'])
-def clear_last_city():
+def clear_last_cities():
     session.pop('last_cities')
     return redirect(url_for('index'))
 
