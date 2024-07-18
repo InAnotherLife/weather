@@ -4,6 +4,8 @@ https://github.com/InAnotherLife/weather
 
 https://t.me/JohnWooooo
 
+[![Weather workflow](https://github.com/InAnotherLife/weather/actions/workflows/main.yml/badge.svg)](https://github.com/InAnotherLife/weather/actions/workflows/main.yml)
+
 ## О проекте
 Веб-приложение позволяет пользователю вводить название города и получать прогноз погоды на ближайшие 14 дней.\
 Приложение разработано на языке Python версии 3.9 с использованием фреймворка Flask. Для работы с БД использовалось расширение Flask-SQLAlchemy. Веб-приложение использует API для получения погоды https://open-meteo.com/. Для сохранения истории запросов погоды используются сессии фреймворка Flask.\
